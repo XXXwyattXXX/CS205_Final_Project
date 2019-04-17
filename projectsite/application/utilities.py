@@ -53,6 +53,9 @@ def makeJson(hashtag):
      # write out geoJSON file
     with open('application/static/application/{}_geoJSON.json'.format(hashtag), 'w') as fout:
         fout.write(json.dumps(skeleton))
+
+    with open('static/application/{}_geoJSON.json'.format(hashtag), 'w') as fout:
+        fout.write(json.dumps(skeleton))
    
 
     

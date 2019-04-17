@@ -36,11 +36,11 @@ def findtweets(request):
                     twitterdata.append('static/application/cities.json')
                 else:
                     # Remove the #
-                    tag = tag[1:]
+                    h_tag = tag[1:]
                     # Make file path
-                    path_to_twitterdata = 'static/application/{}_geoJson.json'
+                    path_to_twitterdata = 'static/application/{}_geoJson.json'.format(h_tag)
                     # make file
-                    makeJson(tag)
+                    makeJson(h_tag)
             
                     twitterdata.append(path_to_twitterdata)
             else:
