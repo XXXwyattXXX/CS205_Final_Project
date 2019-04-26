@@ -5,7 +5,7 @@ $(document).ready(function() {
    
    // Size the <img> tags holding the sentiment graphs.
    $("img").width($("body").width() * 1/6);
-   $("img").width($("body").width() * 1/6);
+   $("img").height($("body").width() * 1/6);
 
    // Alert error if the server is unable to connect to the database upon page load.
    if ( document.getElementById("error") ) { 
