@@ -36,7 +36,9 @@ def findtweets(request):
         error = False
         twitterdata = list()
 
-        for tag in hashtags:
+        for i in range(2):
+            # Done this way so that the tag can be replaced if need be later.
+            tag = hashtags[i]
             if tag != "Select a hashtag":
                 if tag == "Trump test data":
                     twitterdata.append('static/application/trump_geoJson.json')
@@ -45,6 +47,7 @@ def findtweets(request):
                 else:
                     # Safety check the incomming tag. Ensure it's not a copy paste or malicious attack. 
                     if (len(tag) > 14) or tag.isalpha():
+                        hashtags[i] = "Select a hashtag"
                         error = "Invalid tag option. Please try again."
                         twitterdata.append('static/application/empty.json')
                     else:
@@ -58,6 +61,7 @@ def findtweets(request):
 
                             twitterdata.append(path_to_twitterdata)
                         except:
+                            hashtags[i] = "Select a hashtag"
                             error = "Invalid tag option. Please try again."
                             twitterdata.append('static/application/empty.json')
                             

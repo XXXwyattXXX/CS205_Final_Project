@@ -1,7 +1,13 @@
 $(document).ready(function() {
 
+   // Draw the initial blank map with no data at all.
    drawMap(['static/application/empty.json', 'static/application/empty.json']);
    
+   // Size the <img> tags holding the sentiment graphs.
+   $("img").width($("body").width() * 1/6);
+   $("img").width($("body").width() * 1/6);
+
+   // Alert error if the server is unable to connect to the database upon page load.
    if ( document.getElementById("error") ) { 
       showAlert("Failed to connect to database. Options may be limited."); 
    }
@@ -48,12 +54,14 @@ function replaceShownTag(name) {
    var tag = document.getElementById("showntag").innerHTML;
    let content = '';
    if (name[0] != "Select a hashtag") {
+      document.getElementById("image_label_1").innerHTML = name[0];
       content += '<span class="greendot"></span>' + " " + name[0];
       if (name[1] != "Select a hashtag") {
          content += ", ";
       }
    }
    if (name.length > 1 && name[1] != "Select a hashtag") {
+      document.getElementById("image_label_2").innerHTML = name[1];
       content += '<span class="reddot"></span>' + " " + name[1];
    }
    var field = tag.replace(oldField, content);
@@ -83,7 +91,8 @@ function drawMap(tweetgeo) {
       .defer(d3.json, tweetgeo[0])
       .defer(d3.json, tweetgeo[1])
       .await(makeMyMap); // Run 'makeMyMap' when JSONs are loaded
-      
+   
+   // Enable a smooth transition between redrawn images.
    d3.select("#OLD_SVG_ID").transition().remove().duration(300);
    setTimeout(function() {
       document.getElementById("NEW_SVG_ID").style.visibility = "visible";
@@ -91,7 +100,7 @@ function drawMap(tweetgeo) {
    }, 299);
    
    
-
+   // Draw the actual map.
    function makeMyMap(error,states,firstTweets,secondTweets) {
       svg.append('path')
          .datum(topojson.feature(states, states.objects.usStates))
