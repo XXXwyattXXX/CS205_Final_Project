@@ -6,19 +6,17 @@ from sqlalchemy import Sequence
 
 import json
 
-
+# Initialize the database connection with SQL on WebDB
 ssl_args = {'ssl': {'ssl-ca': 'webdb-cacert.pem.txt'}}
     
 db_engine = sql.create_engine(
         'mysql://mgreen13_admin:7oGdoDnzJ9IK8nS8@webdb.uvm.edu/MGREEN13_twitter?charset=utf8', encoding='utf-8', 
         connect_args=ssl_args,convert_unicode = True)
 
-
 Session = sessionmaker(bind=db_engine)
 db = Session()
 
 Base = declarative_base()
-
 
 class User(Base):
      __tablename__ = 'tweet'
@@ -31,7 +29,7 @@ class User(Base):
 
 
 def makeList():
-    
+    """ Create a hashtag list from the available tags in our database. """
     hashtag_list = ["Select a hashtag"]
     for instance in db.query(User).order_by(User.id):
         if instance.tag not in hashtag_list:
@@ -40,7 +38,7 @@ def makeList():
     
     
 def makeJson(hashtag):
-    
+    """ Takes a hashtag as an argument and writes a geoJSON file readable by D3. """
     text = []
     tag =[]
     coordinates = []
@@ -55,13 +53,14 @@ def makeJson(hashtag):
         
         
         
-    # build geoJSON file data structure
+    # Build geoJSON file data structure
     skeleton = {"type":"FeatureCollection","features" : []}
     
-    # fill in features list of geoJson file
+    # Fill in features list of geoJson file
     for i in range(len(coordinates)):
         skeleton['features'].append({"type":"Feature","id": i,"properties":{"tag":tag[i],'text':text[i]},"geometry" :{"type":"Point","coordinates": (coordinates[i][1],coordinates[i][0])}})
-     # write out geoJSON file
+
+    # Write out geoJSON file
     with open('application/static/application/{}_geoJSON.json'.format(hashtag), 'w') as fout:
         fout.write(json.dumps(skeleton))
    

@@ -45,8 +45,7 @@ def findtweets(request):
                 else:
 
                     # TODO: Safety check the incomming text. 
-                    # If the tag is safe, do a search.
-                    # If the tag is not safe, reply with empty.json and an appropriate error message  
+
                     try:
                         # Remove the '#' if it exists
                         h_tag = tag.replace("#","")
@@ -54,7 +53,7 @@ def findtweets(request):
                         path_to_twitterdata = 'static/application/{}_geoJson.json'.format(h_tag)
                         # make file
                         makeJson(h_tag)
-                        
+
                         twitterdata.append(path_to_twitterdata)
                     except:
                         error = "Invalid tag option. Please try again."
