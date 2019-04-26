@@ -182,6 +182,17 @@ function updateMap() {
    let selectedOption1 = document.getElementById("select_tag_1").value;
    let selectedOption2 = document.getElementById("select_tag_2").value;
    let typedOption = document.getElementById("text_input").value;
+
+   // Determine if the selection is from the dropdowns or the text box
+   let buttonPressed = "";
+
+   if ($_POST['action'] == 'selected') {
+      buttonPressed = "selected";
+  } else if ($_POST['action'] == 'typed') {
+      buttonPressed = "typed";
+  } else {
+      return false;
+  }
    
    
    if (selectedOption1 == "Select a hashtag" && selectedOption2 == "Select a hashtag" && !typedOption) {
@@ -192,10 +203,10 @@ function updateMap() {
       let sendData = {};
       if (typedOption) {
          // Shows only the typed option. Fills the second with an empty map.
-         sendData = {'hashtag1': typedOption, 'hashtag2': "Select a hashtag"};
+         sendData = {'hashtag1': typedOption, 'hashtag2': "Select a hashtag", 'button': buttonPressed};
       }
       else {
-         sendData = {'hashtag1': selectedOption1, 'hashtag2': selectedOption2 };
+         sendData = {'hashtag1': selectedOption1, 'hashtag2': selectedOption2, 'button': buttonPressed};
       }
       
       $.getJSON("/findtweets", sendData, function(data, textStatus, jqXHR) {
@@ -207,6 +218,9 @@ function updateMap() {
   
          drawMap(data.twitterdata);
 
+         // How do we get this to work for multiple arrays when two hashtags are selected??
+         makeHistograms(data.sentiment[0], "#image_1");
+         makeHistograms(data.sentiment[1], "#image_2");
       });
       
       selectedOption1 = selectedOption1;
@@ -217,14 +231,10 @@ function updateMap() {
 
 
 function showAlert(error) {
-   console.log(error);
    // Replace the error message with the 'error' argument
    let alert = document.getElementById("alert");
    var field = alert.innerHTML.replace("", error);
    alert.innerHTML = field;
-
-   
-   
 
    // Show the error message for a 4 seconds and then hide it
    $("#alert").show("slow");
@@ -236,3 +246,54 @@ function showAlert(error) {
      }, 4000);
 }
 
+function makeHistograms(data, image) {
+   // retrieve sentiment data directly from database grab
+   let margin = {top: 10, right: 30, bottom: 30, left: 30},
+   width = 460 - margin.left - margin.right,
+   height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+   let svg = d3.select(image)
+   .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+   .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // var values = getData
+      // X axis: scale and draw:
+      let x = d3.scaleLinear()
+         .domain([-1, 1])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+         .range([0, 200]);
+      svg.append("g")
+         .attr("transform", "translate(0," + height + ")")
+         .call(d3.axisBottom(x));
+
+      // set the parameters for the histogram
+      let histogram = d3.histogram()
+         .value(function(d) { return d.price; })   // I need to give the vector of value
+         .domain(x.domain())  // then the domain of the graphic
+         .thresholds(x.ticks(70)); // then the numbers of bins
+
+      // And apply this function to data to get the bins
+      let bins = histogram(data)
+
+      // Y axis: scale and draw:
+      let y = d3.scaleLinear()
+         .range([height, 0]);
+         y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+      svg.append("g")
+         .call(d3.axisLeft(y));
+
+      // append the bar rectangles to the svg element
+      svg.selectAll("rect")
+         .data(bins)
+         .enter()
+         .append("rect")
+            .attr("x", 1)
+            .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+            .attr("width", function(d) { return x(d.x1) - x(d.x0) ; })
+            .attr("height", function(d) { return height - y(d.length); })
+            .style("fill", "#69b3a2")
+
+    };

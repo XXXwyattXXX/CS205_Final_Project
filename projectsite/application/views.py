@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.template import loader
-from .utilities import makeJson, makeList
+from .utilities import makeJson, makeList, getSentiment, getTwitterData
 
 import json
 
@@ -32,9 +32,11 @@ def findtweets(request):
         hashtags = list()
         hashtags.append(incommingdata.__getitem__('hashtag1'))
         hashtags.append(incommingdata.__getitem__('hashtag2'))
+        button = incommingdata.__getitem__('button')
         
         error = False
         twitterdata = list()
+        sentiments = []
 
         for i in range(2):
             # Done this way so that the tag can be replaced if need be later.
@@ -56,9 +58,11 @@ def findtweets(request):
                             h_tag = tag.replace("#","")
                             # Make file path
                             path_to_twitterdata = 'static/application/{}_geoJson.json'.format(h_tag)
+                            # query twitter for desired tweets
+                            if button == "typed":
+                                getTwitterData(h_tag)
                             # make file
                             makeJson(h_tag)
-
                             twitterdata.append(path_to_twitterdata)
                         except:
                             hashtags[i] = "Select a hashtag"
@@ -68,11 +72,14 @@ def findtweets(request):
             else:
                 twitterdata.append('static/application/empty.json')
 
+        # calculate sentiments for each tweet
+        sentiments.append(getSentiment(tag))
         
         returndata = {
             "error": error,
             "hashtag": hashtags,
-            "twitterdata": twitterdata
+            "twitterdata": twitterdata,
+            "sentiment": sentiments
         }
     
     return JsonResponse(returndata)
