@@ -65,7 +65,7 @@
                             &nbsp;
                         </div>
                         <div class="row">
-                            <input type="text" class="form-control" maxlength="14" id="text_input" name="text_input" placeholder="Or try your own.">
+                            <input type="text" class="form-control" maxlength="14" oninput="this.value = this.value.replace(/[^a-z]/, '')" id="text_input" name="text_input" placeholder="Or try your own.">
                         </div>
                         <div class="row">
                             &nbsp;

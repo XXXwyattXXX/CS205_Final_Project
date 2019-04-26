@@ -43,22 +43,24 @@ def findtweets(request):
                 elif tag == "US cities":
                     twitterdata.append('static/application/cities.json')
                 else:
-
-                    # TODO: Safety check the incomming text. 
-
-                    try:
-                        # Remove the '#' if it exists
-                        h_tag = tag.replace("#","")
-                        # Make file path
-                        path_to_twitterdata = 'static/application/{}_geoJson.json'.format(h_tag)
-                        # make file
-                        makeJson(h_tag)
-
-                        twitterdata.append(path_to_twitterdata)
-                    except:
+                    # Safety check the incomming tag. Ensure it's not a copy paste or malicious attack. 
+                    if (len(tag) > 14) or tag.isalpha():
                         error = "Invalid tag option. Please try again."
                         twitterdata.append('static/application/empty.json')
-                        
+                    else:
+                        try:
+                            # Remove the '#' if it exists
+                            h_tag = tag.replace("#","")
+                            # Make file path
+                            path_to_twitterdata = 'static/application/{}_geoJson.json'.format(h_tag)
+                            # make file
+                            makeJson(h_tag)
+
+                            twitterdata.append(path_to_twitterdata)
+                        except:
+                            error = "Invalid tag option. Please try again."
+                            twitterdata.append('static/application/empty.json')
+                            
             else:
                 twitterdata.append('static/application/empty.json')
 
