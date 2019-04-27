@@ -41,7 +41,9 @@ def findtweets(request):
         for i in range(2):
             # Done this way so that the tag can be replaced if need be later.
             tag = hashtags[i]
-            if tag != "Select a hashtag":
+            if tag == "Select a hashtag":
+                twitterdata.append('static/application/empty.json')
+            else:
                 if tag == "Trump test data":
                     twitterdata.append('static/application/trump_geoJson.json')
                 elif tag == "US cities":
@@ -67,16 +69,13 @@ def findtweets(request):
                         except:
                             hashtags[i] = "Select a hashtag"
                             error = "Unable to source twitter data at this time."
-                            twitterdata.append('static/application/empty.json')
-                            
-            else:
-                twitterdata.append('static/application/empty.json')
-
-        # calculate sentiments for each tweet
-        try:
-            sentiments.append(getSentiment(tag))
-        except:
-            error = "Unable to gather twitter sentiment."
+                            twitterdata.append('static/application/empty.json')         
+                
+            # calculate sentiments for each tweet
+            try:
+                sentiments.append(getSentiment(tag))
+            except:
+                error = "Unable to gather twitter sentiment."
 
         returndata = {
             "error": error,

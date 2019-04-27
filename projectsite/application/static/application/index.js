@@ -8,9 +8,10 @@ $(document).ready(function() {
    $("img").height($("body").width() * 1/6);
 
    // Alert error if the server is unable to connect to the database upon page load.
-   if ( document.getElementById("error") ) { 
+   if ( $("#error").val() == "True" ) { 
       showAlert("Failed to connect to database. Options may be limited."); 
    }
+
 
    $("#select_tag_1").change(function() {
       // Disable the first selected value from the second dropdown.
@@ -51,17 +52,21 @@ $(document).ready(function() {
 let oldField = "None Selected";
 
 function replaceShownTag(name) {
-   var tag = document.getElementById("showntag").innerHTML;
+   let tag = document.getElementById("showntag").innerHTML;
+   let label1 = document.getElementById("image_label_1");
+   let label2 = document.getElementById("image_label_2");
+   label1.innerHTML = "Tag 1";
+   label2.innerHTML = "Tag 2";
    let content = '';
    if (name[0] != "Select a hashtag") {
-      document.getElementById("image_label_1").innerHTML = name[0];
+      label1.innerHTML = name[0];
       content += '<span class="greendot"></span>' + " " + name[0];
       if (name[1] != "Select a hashtag") {
          content += ", ";
       }
    }
    if (name.length > 1 && name[1] != "Select a hashtag") {
-      document.getElementById("image_label_2").innerHTML = name[1];
+      label2.innerHTML = name[1];
       content += '<span class="reddot"></span>' + " " + name[1];
    }
    var field = tag.replace(oldField, content);
@@ -199,19 +204,24 @@ function updateMap(buttonPressed) {
       else {
          return false;
       }
-      
       $.getJSON("/findtweets", sendData, function(data, textStatus, jqXHR) {
          
+         // Show the appropriate error message if there was a problem retrieving data
          if (data.error) {
             showAlert(data.error);
          }
+
+         // Adjust the GUI to display the retrieved data
          replaceShownTag(data.hashtag);
-  
          drawMap(data.twitterdata);
 
-         // How do we get this to work for multiple arrays when two hashtags are selected??
-         makeHistograms(data.sentiment[0], "#image_1");
-         makeHistograms(data.sentiment[1], "#image_2");
+         // Show sentiment histograms if they exist.
+         if (data.sentiment[0]) {
+            makeHistograms(data.sentiment[0], "#image_1");
+         }
+         if (data.sentiment[1]) {
+            makeHistograms(data.sentiment[1], "#image_2");
+         }
       });
       
       selectedOption1 = selectedOption1;
