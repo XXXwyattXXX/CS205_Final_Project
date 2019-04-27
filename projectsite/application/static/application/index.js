@@ -2,10 +2,6 @@ $(document).ready(function() {
 
    // Draw the initial blank map with no data at all.
    drawMap(['static/application/empty.json', 'static/application/empty.json']);
-   
-   // Size the <img> tags holding the sentiment graphs.
-   $("img").width($("body").width() * 1/6);
-   $("img").height($("body").width() * 1/6);
 
    // Alert error if the server is unable to connect to the database upon page load.
    if ( $("#error").val() == "True" ) { 
@@ -53,20 +49,15 @@ let oldField = "None Selected";
 
 function replaceShownTag(name) {
    let tag = document.getElementById("showntag").innerHTML;
-   let label1 = document.getElementById("image_label_1");
-   let label2 = document.getElementById("image_label_2");
-   label1.innerHTML = "Tag 1";
-   label2.innerHTML = "Tag 2";
+   
    let content = '';
    if (name[0] != "Select a hashtag") {
-      label1.innerHTML = name[0];
       content += '<span class="greendot"></span>' + " " + name[0];
       if (name[1] != "Select a hashtag") {
          content += ", ";
       }
    }
    if (name.length > 1 && name[1] != "Select a hashtag") {
-      label2.innerHTML = name[1];
       content += '<span class="reddot"></span>' + " " + name[1];
    }
    var field = tag.replace(oldField, content);
@@ -151,7 +142,7 @@ function drawMap(tweetgeo) {
 function getScaleFactor() {
    
    let formHeight = $("heading").height() + $("#showntag").height();
-   let viewWidth = $("body").width() * (2/3);
+   let viewWidth = $("body").width() * (4/5);
    let viewHeight = $("body").height() - formHeight;
 
    let scaleFactor = 1000;
@@ -186,19 +177,15 @@ function showTooltip(d) {
 function updateMap(buttonPressed) {
    let selectedOption1 = document.getElementById("select_tag_1").value;
    let selectedOption2 = document.getElementById("select_tag_2").value;
-   let typedOption = document.getElementById("text_input").value;
    
-   if (selectedOption1 == "Select a hashtag" && selectedOption2 == "Select a hashtag" && !typedOption) {
+   if (selectedOption1 == "Select a hashtag" && selectedOption2 == "Select a hashtag") {
       // At this point, no hashtag has been selected in the first drop down
       return false;
    }
    else {
       let sendData = {};
-      if (buttonPressed == "typed") {
-         // Shows only the typed option. Fills the second with an empty map.
-         sendData = {'hashtag1': typedOption, 'hashtag2': "Select a hashtag", 'button': buttonPressed};
-      }
-      else if (buttonPressed == "selected") {
+
+      if (buttonPressed == "selected") {
          sendData = {'hashtag1': selectedOption1, 'hashtag2': selectedOption2, 'button': buttonPressed};
       }
       else {
@@ -215,13 +202,6 @@ function updateMap(buttonPressed) {
          replaceShownTag(data.hashtag);
          drawMap(data.twitterdata);
 
-         // Show sentiment histograms if they exist.
-         if (data.sentiment[0]) {
-            makeHistograms(data.sentiment[0], "#image_1");
-         }
-         if (data.sentiment[1]) {
-            makeHistograms(data.sentiment[1], "#image_2");
-         }
       });
       
       selectedOption1 = selectedOption1;
@@ -252,55 +232,3 @@ function showAlert(error) {
       alert.innerHTML = field;
      }, 3000);
 }
-
-function makeHistograms(data, image) {
-   // retrieve sentiment data directly from database grab
-   let margin = {top: 10, right: 30, bottom: 30, left: 30},
-   width = 460 - margin.left - margin.right,
-   height = 400 - margin.top - margin.bottom;
-
-   // append the svg object to the body of the page
-   let svg = d3.select(image)
-   .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-   .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-   // var values = getData
-   // X axis: scale and draw:
-   let x = d3.scaleLinear()
-      .domain([-1, 1])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-      .range([0, 200]);
-   svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-
-   // set the parameters for the histogram
-   let histogram = d3.histogram()
-      .value(function(d) { return d.price; })   // I need to give the vector of value
-      .domain(x.domain())  // then the domain of the graphic
-      .thresholds(x.ticks(70)); // then the numbers of bins
-
-   // And apply this function to data to get the bins
-   let bins = histogram(data)
-
-   // Y axis: scale and draw:
-   let y = d3.scaleLinear()
-      .range([height, 0]);
-      y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-   svg.append("g")
-      .call(d3.axisLeft(y));
-
-   // append the bar rectangles to the svg element
-   svg.selectAll("rect")
-      .data(bins)
-      .enter()
-      .append("rect")
-         .attr("x", 1)
-         .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-         .attr("width", function(d) { return x(d.x1) - x(d.x0) ; })
-         .attr("height", function(d) { return height - y(d.length); })
-         .style("fill", "#69b3a2")
-
-    };

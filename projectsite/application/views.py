@@ -36,7 +36,6 @@ def findtweets(request):
         
         error = False
         twitterdata = list()
-        sentiments = []
 
         for i in range(2):
             # Done this way so that the tag can be replaced if need be later.
@@ -71,17 +70,10 @@ def findtweets(request):
                             error = "Unable to source twitter data at this time."
                             twitterdata.append('static/application/empty.json')         
                 
-            # calculate sentiments for each tweet
-            try:
-                sentiments.append(getSentiment(tag))
-            except:
-                error = "Unable to gather twitter sentiment."
-
         returndata = {
             "error": error,
             "hashtag": hashtags,
-            "twitterdata": twitterdata,
-            "sentiment": sentiments
+            "twitterdata": twitterdata
         }
     
     return JsonResponse(returndata)
