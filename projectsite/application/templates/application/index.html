@@ -9,7 +9,7 @@
 
 {% block main %}
 <div class="container-fluid">
-    <form onsubmit="return updateMap()" id="form" method="POST">
+    <form id="form" method="POST">
         {% csrf_token %}
         &nbsp;
         <div style="display: none; position: absolute;" id="alert" class="alert alert-dismissible alert-danger">
@@ -66,7 +66,7 @@
                         </div>
                         <div class="row">
                             <!-- Go button to send the ajax request and refresh image -->
-                            <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="submit" value="selected">Show Selected Tags</button>
+                            <button onclick="return updateMap('selected')" class="btn btn-primary" style="display: block; margin: 0 auto;" id="submit" value="selected">Show Selected Tags</button>
                         </div>
                         <div class="row">
                             &nbsp;
@@ -79,7 +79,7 @@
                         </div>
                         <div class="row">
                             <!-- Go button to send the ajax request and refresh image -->
-                            <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="submit" value="typed">Try My Own</button>
+                            <button onclick="return updateMap('typed')" class="btn btn-primary" style="display: block; margin: 0 auto;" id="submit" value="typed">Try My Own</button>
                         </div>
                     </div>
                     <div class="col-md-8">

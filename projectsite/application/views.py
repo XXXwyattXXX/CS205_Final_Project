@@ -73,8 +73,11 @@ def findtweets(request):
                 twitterdata.append('static/application/empty.json')
 
         # calculate sentiments for each tweet
-        sentiments.append(getSentiment(tag))
-        
+        try:
+            sentiments.append(getSentiment(tag))
+        except:
+            error = "Unable to gather twitter sentiment."
+
         returndata = {
             "error": error,
             "hashtag": hashtags,

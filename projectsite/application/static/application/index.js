@@ -178,22 +178,10 @@ function showTooltip(d) {
 }
 
 
-function updateMap() {
+function updateMap(buttonPressed) {
    let selectedOption1 = document.getElementById("select_tag_1").value;
    let selectedOption2 = document.getElementById("select_tag_2").value;
    let typedOption = document.getElementById("text_input").value;
-
-   // Determine if the selection is from the dropdowns or the text box
-   let buttonPressed = "";
-
-   if ($_POST['action'] == 'selected') {
-      buttonPressed = "selected";
-  } else if ($_POST['action'] == 'typed') {
-      buttonPressed = "typed";
-  } else {
-      return false;
-  }
-   
    
    if (selectedOption1 == "Select a hashtag" && selectedOption2 == "Select a hashtag" && !typedOption) {
       // At this point, no hashtag has been selected in the first drop down
@@ -201,12 +189,15 @@ function updateMap() {
    }
    else {
       let sendData = {};
-      if (typedOption) {
+      if (buttonPressed == "typed") {
          // Shows only the typed option. Fills the second with an empty map.
          sendData = {'hashtag1': typedOption, 'hashtag2': "Select a hashtag", 'button': buttonPressed};
       }
-      else {
+      else if (buttonPressed == "selected") {
          sendData = {'hashtag1': selectedOption1, 'hashtag2': selectedOption2, 'button': buttonPressed};
+      }
+      else {
+         return false;
       }
       
       $.getJSON("/findtweets", sendData, function(data, textStatus, jqXHR) {
@@ -236,6 +227,12 @@ function showAlert(error) {
    var field = alert.innerHTML.replace("", error);
    alert.innerHTML = field;
 
+   // Disable buttons while error message is shown.
+   $("button").prop('disabled', true);
+   setTimeout( function() {
+      $("button").prop('disabled',false);
+   }, 3000);
+
    // Show the error message for a 4 seconds and then hide it
    $("#alert").show("slow");
    
@@ -243,7 +240,7 @@ function showAlert(error) {
       $("#alert").hide("slow");
       field = alert.innerHTML.replace(error, "");
       alert.innerHTML = field;
-     }, 4000);
+     }, 3000);
 }
 
 function makeHistograms(data, image) {
