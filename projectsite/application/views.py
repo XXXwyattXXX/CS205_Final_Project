@@ -48,7 +48,7 @@ def findtweets(request):
                     twitterdata.append('static/application/cities.json')
                 else:
                     # Safety check the incomming tag. Ensure it's not a copy paste or malicious attack. 
-                    if (len(tag) > 14) or tag.isalpha():
+                    if (len(tag) > 14) or not tag.isalpha():
                         hashtags[i] = "Select a hashtag"
                         error = "Invalid tag option. Please try again."
                         twitterdata.append('static/application/empty.json')
@@ -66,7 +66,7 @@ def findtweets(request):
                             twitterdata.append(path_to_twitterdata)
                         except:
                             hashtags[i] = "Select a hashtag"
-                            error = "Invalid tag option. Please try again."
+                            error = "Unable to source twitter data at this time."
                             twitterdata.append('static/application/empty.json')
                             
             else:
