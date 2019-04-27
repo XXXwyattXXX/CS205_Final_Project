@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.template import loader
-from .utilities import makeJson, makeList, getSentiment, getTwitterData
+from .utilities import makeJson, makeList
 
 import json
 
@@ -59,9 +59,6 @@ def findtweets(request):
                             h_tag = tag.replace("#","")
                             # Make file path
                             path_to_twitterdata = 'static/application/{}_geoJson.json'.format(h_tag)
-                            # query twitter for desired tweets
-                            if button == "typed":
-                                getTwitterData(h_tag)
                             # make file
                             makeJson(h_tag)
                             twitterdata.append(path_to_twitterdata)
