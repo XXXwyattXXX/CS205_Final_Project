@@ -66,6 +66,7 @@ svg {
    Current font sucks. */
 .heading {
     text-align: center;
+    margin: 15px;
     font-family: 'Amatic SC', cursive;
     font-size: 400%;
     font-weight: bold;
