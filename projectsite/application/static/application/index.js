@@ -152,7 +152,7 @@ function getScaleFactor() {
    
    let formHeight = $("heading").height() + $("#showntag").height();
    let viewWidth = $("body").width() * (2/3);
-   let viewHeight = $("body").height() - formHeight;
+   let viewHeight = $("body").height() - formHeight - 45;
 
    let scaleFactor = 1000;
    
