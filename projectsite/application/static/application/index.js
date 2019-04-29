@@ -186,20 +186,15 @@ function showTooltip(d) {
 function updateMap(buttonPressed) {
    let selectedOption1 = document.getElementById("select_tag_1").value;
    let selectedOption2 = document.getElementById("select_tag_2").value;
-   let typedOption = document.getElementById("text_input").value;
    
-   if (selectedOption1 == "Select a hashtag" && selectedOption2 == "Select a hashtag" && !typedOption) {
+   if (selectedOption1 == "Select a hashtag" && selectedOption2 == "Select a hashtag") {
       // At this point, no hashtag has been selected in the first drop down
       return false;
    }
    else {
       let sendData = {};
-      if (buttonPressed == "typed") {
-         // Shows only the typed option. Fills the second with an empty map.
-         sendData = {'hashtag1': typedOption, 'hashtag2': "Select a hashtag", 'button': buttonPressed};
-      }
-      else if (buttonPressed == "selected") {
-         sendData = {'hashtag1': selectedOption1, 'hashtag2': selectedOption2, 'button': buttonPressed};
+      if (buttonPressed == "selected") {
+         sendData = {'hashtag1': selectedOption1, 'hashtag2': selectedOption2};
       }
       else {
          return false;

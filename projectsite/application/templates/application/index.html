@@ -11,14 +11,12 @@
 <div class="container-fluid">
     <form id="form" method="POST">
         {% csrf_token %}
-        &nbsp;
         <div style="display: none; position: absolute;" id="alert" class="alert alert-dismissible alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <strong> </strong>
         </div>
         <div class="form-group">
             <div class="heading">Welcome to our Twitter density map.</div>
-            &nbsp;
             <div class="row">
                 <div id="showntag" style="display: inline-block; text-align: center;">
                     <p><strong>Hashtags Shown: </strong> None Selected</p>
@@ -70,16 +68,6 @@
                         </div>
                         <div class="row">
                             &nbsp;
-                        </div>
-                        <div class="row">
-                            <input type="text" class="form-control" style="margin: 10px;" maxlength="14" autocomplete="off" oninput="this.value = this.value.replace(/[^a-z]/, '')" id="text_input" name="text_input" placeholder="Or try your own.">
-                        </div>
-                        <div class="row">
-                            &nbsp;
-                        </div>
-                        <div class="row">
-                            <!-- Go button to send the ajax request and refresh image -->
-                            <button onclick="return updateMap('typed')" class="btn btn-primary" style="display: block; margin: 0 auto;" id="submit" value="typed">Try My Own</button>
                         </div>
                     </div>
                     <div class="col-md-8">

@@ -62,10 +62,10 @@ svg {
     margin: 0 auto;
 }
 /* Fonts can be selected from https://fonts.google.com/
-   Must also be changed in the layout.html 
-   Current font sucks. */
+   Must also be changed in the layout.html  */
 .heading {
     text-align: center;
+    margin: 15px;
     font-family: 'Amatic SC', cursive;
     font-size: 400%;
     font-weight: bold;
