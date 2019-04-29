@@ -4,8 +4,11 @@ $(document).ready(function() {
    drawMap(['static/application/empty.json', 'static/application/empty.json']);
    
    // Size the <img> tags holding the sentiment graphs.
-   $("img").width($("body").width() * 1/6);
-   $("img").height($("body").width() * 1/6);
+   $("#image_1").width($("body").width() * 1/6);
+   $("#image_1").height($("body").width() * 1/6);
+
+   $("#image_2").width($("body").width() * 1/6);
+   $("#image_2").height($("body").width() * 1/6);
 
    // Alert error if the server is unable to connect to the database upon page load.
    if ( $("#error").val() == "True" ) { 
@@ -211,12 +214,20 @@ function updateMap(buttonPressed) {
          drawMap(data.twitterdata);
 
          // Show sentiment histograms if they exist.
+	 console.log(data.sentiment);
          if (data.sentiment[0]) {
             makeHistograms(data.sentiment[0], "#image_1");
          }
          if (data.sentiment[1]) {
             makeHistograms(data.sentiment[1], "#image_2");
          }
+	 
+   	// Enable a smooth transition between redrawn images.
+   	d3.select("#OLD_GRAPH").transition().remove().duration(300);
+   	setTimeout(function() {
+      	document.getElementById("NEW_GRAPH").style.visibility = "visible";
+      	document.getElementById("NEW_GRAPH").id = "OLD_GRAPH";
+   	}, 299);
       });
       
       selectedOption1 = selectedOption1;
@@ -250,13 +261,15 @@ function showAlert(error) {
 
 function makeHistograms(data, image) {
    // retrieve sentiment data directly from database grab
+
    let margin = {top: 10, right: 30, bottom: 30, left: 30},
-   width = 460 - margin.left - margin.right,
-   height = 400 - margin.top - margin.bottom;
+   width = ($("body").width() * 1/6) - margin.left - margin.right,
+   height = ($("body").width() * 1/6) - margin.top - margin.bottom;
 
    // append the svg object to the body of the page
    let svg = d3.select(image)
    .append("svg")
+      .attr("id", "NEW_SVG_ID")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
    .append("g")
