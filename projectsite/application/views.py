@@ -58,7 +58,7 @@ def findtweets(request):
                             # Remove the '#' if it exists
                             h_tag = tag.replace("#","")
                             # Make file path
-                            path_to_twitterdata = 'static/application/{}_geoJson.json'.format(h_tag)
+                            path_to_twitterdata = 'static/application/{}_geoJSON.json'.format(h_tag)
                             # make file
                             makeJson(h_tag)
                             twitterdata.append(path_to_twitterdata)
