@@ -65,7 +65,7 @@ svg {
    Must also be changed in the layout.html  */
 .heading {
     text-align: center;
-    margin: 15px;
+    padding: 15px;
     font-family: 'Amatic SC', cursive;
     font-size: 400%;
     font-weight: bold;
