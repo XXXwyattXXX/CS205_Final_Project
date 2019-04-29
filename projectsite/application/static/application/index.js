@@ -141,7 +141,7 @@ function drawMap(tweetgeo) {
 
 function getScaleFactor() {
    
-   let formHeight = $("heading").height() + $("#showntag").height();
+   let formHeight = $(".heading").height() + $("#showntag").height();
    let viewWidth = $("body").width() * (4/5);
    let viewHeight = $("body").height() - formHeight;
 
